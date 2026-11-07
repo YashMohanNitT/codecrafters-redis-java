@@ -4,6 +4,6 @@ import java.util.List;
 public final class PingHandler implements CommandHandler {
   @Override
   public RespValue handle(List<String> args) {
-    return new RespValue.SimpleString("PONG");
+    return new RespValue.BulkString("PONG");
   }
 }
