@@ -1,14 +1,11 @@
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class Main {
   private static final int PORT = 6379;
-  private static final byte[] PONG = "+PONG\r\n".getBytes(StandardCharsets.UTF_8);
 
   public static void main(String[] args) {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -31,20 +28,28 @@ public class Main {
     }
   }
 
-  // Replies +PONG to every read until the client closes the connection, then closes the socket.
+  // Decodes one request at a time and writes one reply for each, until the client disconnects.
   private static void handleClient(Socket clientSocket) {
     try (clientSocket) {
-      InputStream in = clientSocket.getInputStream();
+      RespDecoder decoder = new RespDecoder(clientSocket.getInputStream());
       OutputStream out = clientSocket.getOutputStream();
-      final byte[] buffer = new byte[1024];
-      int n;
-      while ((n = in.read(buffer)) != -1) {
-        String message = new String(buffer, 0, n, StandardCharsets.UTF_8);
-        System.out.println(message.replace("\r", "\\r").replace("\n", "\\n"));
-        out.write(PONG);
+      RespValue request;
+      while ((request = decoder.decode()) != null) {
+        System.out.println("Received: " + request);
+        out.write(RespEncoder.encode(respond(request)));
       }
     } catch (IOException e) {
       System.out.println("IOException: " + e.getMessage());
     }
+  }
+
+  // Chooses the reply for one request. A client request is an array of bulk strings,
+  // for example ["PING"] or ["ECHO", "hey"].
+  private static RespValue respond(RespValue request) {
+    if (request instanceof RespValue.Array(java.util.List<RespValue> elements) && elements.get(0).equals(new RespValue.BulkString("ECHO"))) {
+      return elements.get(1);
+    }
+    // TODO(human)
+    return new RespValue.SimpleString("PONG");
   }
 }
