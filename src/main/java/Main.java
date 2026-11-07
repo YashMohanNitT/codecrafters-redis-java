@@ -23,7 +23,7 @@ public class Main {
           byte[] buffer = new byte[1024];
           int n = inputStream.read(buffer);
           String message = new String(buffer, 0, n);
-          System.out.println(message);
+          System.out.println(message.replace("\r", "\\r").replace("\n", "\\n"));
         } catch (IOException e) {
           System.out.println("IOException: " + e.getMessage());
         } finally {
