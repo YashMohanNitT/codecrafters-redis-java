@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 /** The commands this server understands, with the number of parts each one needs. */
 public enum CommandType {
-  PING(2),
+  PING(1),
   ECHO(2),
   SET(3),
   GET(2);
