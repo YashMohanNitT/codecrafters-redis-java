@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
   public static void main(String[] args){
@@ -24,6 +25,9 @@ public class Main {
           int n = inputStream.read(buffer);
           String message = new String(buffer, 0, n);
           System.out.println(message.replace("\r", "\\r").replace("\n", "\\n"));
+          String output = "+PONG\r\n";
+          buffer = output.getBytes(StandardCharsets.UTF_8);
+          clientSocket.getOutputStream().write(buffer);
         } catch (IOException e) {
           System.out.println("IOException: " + e.getMessage());
         } finally {
