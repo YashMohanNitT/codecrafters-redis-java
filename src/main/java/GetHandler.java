@@ -17,6 +17,6 @@ public final class GetHandler implements CommandHandler {
       return new RespValue.BulkString(value.value);
     }
     store.remove(args.getFirst());
-    return new RespValue.BulkString(RespValue.NULL_BULK_STRING);
+    return new RespValue.SimpleString(RespValue.NULL_BULK_STRING);
   }
 }
