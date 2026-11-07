@@ -32,6 +32,6 @@ public enum CommandType {
 
   /** Returns true when a request with this many parts, the name included, fits this command's arity. */
   public boolean hasValidArity(int partCount) {
-    return partCount == this.arity;
+    return partCount >= this.arity;
   }
 }

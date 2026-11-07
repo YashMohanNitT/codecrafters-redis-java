@@ -5,7 +5,7 @@ import java.util.List;
  * The first byte on the wire tells which type follows: + - : $ *
  */
 public sealed interface RespValue {
-
+  String NULL_BULK_STRING = "$-1\r\n";
   /** "+OK\r\n". Must not contain \r or \n. */
   record SimpleString(String value) implements RespValue {}
 

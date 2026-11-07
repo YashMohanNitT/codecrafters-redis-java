@@ -3,19 +3,25 @@ import java.util.concurrent.ConcurrentMap;
 
 /** SET key value -> +OK. */
 public final class SetHandler implements CommandHandler {
-  private final ConcurrentMap<String, String> store;
+  private final ConcurrentMap<String, Value> store;
 
-  public SetHandler(ConcurrentMap<String, String> store) {
+  public SetHandler(ConcurrentMap<String, Value> store) {
     this.store = store;
   }
 
   @Override
   public RespValue handle(List<String> args) {
-    // Options such as "PX 100" are not supported yet. Reject them instead of silently ignoring them.
+    Long expireAt = System.currentTimeMillis();
     if (args.size() > 2) {
-      throw new CommandException("ERR syntax error");
+      if (args.get(2).equals("EX")) {
+        expireAt += 1000*Long.parseLong(args.get(3));
+      } else if (args.get(2).equals("PX")) {
+        expireAt += Long.parseLong(args.get(3));
+      }
+    } else {
+      expireAt += 999_999_999_999L;
     }
-    store.put(args.get(0), args.get(1));
+    store.put(args.get(0), new Value(args.get(1), expireAt));
     return new RespValue.SimpleString("OK");
   }
 }

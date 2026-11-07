@@ -11,7 +11,7 @@ public final class CommandDispatcher {
   private final Map<CommandType, CommandHandler> handlers = new EnumMap<>(CommandType.class);
 
   public CommandDispatcher() {
-    ConcurrentMap<String, String> store = new ConcurrentHashMap<>();
+    ConcurrentMap<String, Value> store = new ConcurrentHashMap<>();
     for (CommandType type : CommandType.values()) {
       // No default branch: a new CommandType does not compile until it gets a handler here.
       handlers.put(type, switch (type) {
