@@ -8,6 +8,13 @@
 
 set -e # Exit early if any commands fail
 
+# Local only: the shell's default JAVA_HOME is Java 8, but this project needs Java 25.
+LOCAL_JAVA_HOME="/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home"
+if [ -d "$LOCAL_JAVA_HOME" ]; then
+  export JAVA_HOME="$LOCAL_JAVA_HOME"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+
 # Copied from .codecrafters/compile.sh
 #
 # - Edit this to change how your program compiles locally
