@@ -13,7 +13,7 @@ public final class GetHandler implements CommandHandler {
   public RespValue handle(List<String> args) {
     // A missing key gives null, and BulkString(null) encodes as the RESP null bulk string.
     Value value = store.get(args.getFirst());
-    if (value.expireAt > System.currentTimeMillis()) {
+    if (value.expireAt >= System.currentTimeMillis()) {
       return new RespValue.BulkString(value.value);
     }
     store.remove(args.getFirst());
